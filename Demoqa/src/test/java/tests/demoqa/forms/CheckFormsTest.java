@@ -18,10 +18,10 @@ public class CheckFormsTest extends BaseTest {
         basePage.open("https://demoqa.com/");
         startPage.clickToForms();
     }
-//    @AfterClass
-//    public void closeAllWindow() {
-//        driver.quit();
-//    }
+    @AfterClass
+    public void closeAllWindow() {
+        driver.quit();
+    }
 
     @Test
     public void fillForms() {
