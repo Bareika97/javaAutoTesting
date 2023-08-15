@@ -1,9 +1,12 @@
 package pages.practiceform;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pages.base.BasePage;
+
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,37 +19,40 @@ public class PracticeForm extends BasePage {
         super(driver);
     }
 
-    By practiceForm = By.xpath("//span[text() = 'Practice Form']");
-    By countStudentFrom = By.cssSelector(".mt-2.row");
+    private final By practiceForm = By.xpath("//span[text() = 'Practice Form']");
+    private final By countStudentFrom = By.cssSelector(".mt-2.row");
 
-    By firstNameSelector = By.cssSelector("#firstName");
-    By secondNameSelector = By.cssSelector("#lastName");
+    private final By firstNameSelector = By.cssSelector("#firstName");
+    private final By secondNameSelector = By.cssSelector("#lastName");
 
-    By emailLocator = By.id("userEmail");
+    private final By emailLocator = By.id("userEmail");
 
-    By genderLocatorMale = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][1]");
-    By genderLocatorFemale = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][2]");
-    By genderLocatorOther = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][3]");
+    private final By genderLocatorMale = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][1]");
+    private final By genderLocatorFemale = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][2]");
+    private final By genderLocatorOther = By.xpath("//div[@class = 'custom-control custom-radio custom-control-inline'][3]");
 
-    By mobileSelector = By.id("userNumber");
+    private final By mobileSelector = By.id("userNumber");
 
-    By dateOfBirthSelector = By.id("dateOfBirthInput");
-    By yearSelector = By.xpath("//select[@class = 'react-datepicker__year-select']");
-    By monthSelector = By.cssSelector(".react-datepicker__month-select");
+    private final By dateOfBirthSelector = By.id("dateOfBirthInput");
+    private final By yearSelector = By.xpath("//select[@class = 'react-datepicker__year-select']");
+    private final By monthSelector = By.cssSelector(".react-datepicker__month-select");
 
-    By subjectSelector = By.cssSelector("#subjectsInput");
+    private final By subjectSelector = By.cssSelector("#subjectsInput");
 
-    By hobby1Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][1]");
-    By hobby2Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][2]");
-    By hobby3Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][3]");
+    private final By hobby1Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][1]");
+    private final By hobby2Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][2]");
+    private final By hobby3Selector = By.xpath("//div[@class = 'custom-control custom-checkbox custom-control-inline'][3]");
 
-    By addPictureSelector = By.cssSelector("#uploadPicture");
+    private final By addPictureSelector = By.cssSelector("#uploadPicture");
 
-    By currentAddressLocator = By.xpath("//textarea[@placeholder = 'Current Address']");
-    By selectStateSelector = By.cssSelector("#react-select-3-input");
-    By selectCitySelector = By.cssSelector("#react-select-4-input");
+    private final By currentAddressLocator = By.xpath("//textarea[@placeholder = 'Current Address']");
+    private final By selectStateSelector = By.cssSelector("#react-select-3-input");
+    private final By selectCitySelector = By.cssSelector("#react-select-4-input");
 
-    By submitSelector = By.cssSelector("#submit");
+    private final By submitSelector = By.cssSelector("#submit");
+
+    private final By elementsTableSelector = By.cssSelector("table.table.table-dark tbody tr");
+    private final By headerTableSelector = By.cssSelector(".modal-header");
 
     public PracticeForm clickToPracticeForm() {
         driver.findElement(practiceForm).click();
@@ -61,6 +67,7 @@ public class PracticeForm extends BasePage {
 
     public PracticeForm insertFirstName(String firstName) {
         WebElement firstNameElement = driver.findElement(firstNameSelector);
+
         firstNameElement.sendKeys(firstName);
         return this;
     }
@@ -142,19 +149,15 @@ public class PracticeForm extends BasePage {
     }
 
     public PracticeForm selectState(String state) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        WebElement element = driver.findElement(selectStateSelector);
-        wait.until(ExpectedConditions.elementToBeClickable(element)).sendKeys(state);
+        WebElement element = waitElementIsVisible(driver.findElement(selectStateSelector));
+        element.sendKeys(state);
         element.sendKeys(Keys.ENTER);
         return this;
     }
 
     public PracticeForm selectCity(String city) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        WebElement element = driver.findElement(selectCitySelector);
-
-        wait.until(ExpectedConditions.elementToBeClickable(element)).sendKeys(city);
-
+        WebElement element = waitElementIsVisible(driver.findElement(selectCitySelector));
+        element.sendKeys(city);
         element.sendKeys(Keys.ENTER);
         return this;
     }
@@ -166,24 +169,18 @@ public class PracticeForm extends BasePage {
     }
 
     public PracticeForm clickSubmit() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        WebElement element = driver.findElement(submitSelector);
-        wait.until(ExpectedConditions.elementToBeClickable(element)).click();
+        WebElement element = waitElementIsVisible(driver.findElement(submitSelector));
+        element.click();
         return this;
     }
-    public PracticeForm getResultForms(){
-        List elements = driver.findElements(By.xpath("//table[@class = 'table table-dark table-striped table-bordered table-hover']//tbody/tr"));
-        int countResultForms = elements.size();
-        Assert.assertEquals(countResultForms, 10);
 
+    public PracticeForm getResultForms() {
+        List<WebElement> elementsTable = driver.findElements(elementsTableSelector);
+        int countResultForms = elementsTable.size();
+        Assert.assertEquals(countResultForms, 10);
+        WebElement headerTable = driver.findElement(headerTableSelector);
+        Assert.assertEquals(headerTable.getText(), "Thanks for submitting the form");
         return this;
     }
-    public void closeAllWindow(){
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        driver.quit();
-    }
+
 }
