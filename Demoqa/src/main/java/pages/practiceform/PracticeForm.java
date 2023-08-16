@@ -1,16 +1,11 @@
 package pages.practiceform;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pages.base.BasePage;
 
 import java.io.File;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
 
 import static common.Config.COUNT_STUDENT_FORM;
 
@@ -51,7 +46,6 @@ public class PracticeForm extends BasePage {
 
     private final By submitSelector = By.cssSelector("#submit");
 
-    private final By elementsTableSelector = By.cssSelector("table.table.table-dark tbody tr");
     private final By headerTableSelector = By.cssSelector(".modal-header");
 
     public PracticeForm clickToPracticeForm() {
@@ -175,11 +169,16 @@ public class PracticeForm extends BasePage {
     }
 
     public PracticeForm getResultForms() {
-        List<WebElement> elementsTable = driver.findElements(elementsTableSelector);
-        int countResultForms = elementsTable.size();
-        Assert.assertEquals(countResultForms, 10);
+
         WebElement headerTable = driver.findElement(headerTableSelector);
         Assert.assertEquals(headerTable.getText(), "Thanks for submitting the form");
+
+        WebElement tableElements = driver.findElement(By.xpath("//table[@class = 'table table-dark table-striped table-bordered table-hover']"));
+        ResultTable table = new ResultTable(driver, tableElements);
+        Assert.assertEquals(table.getRows().size(), 10);
+        Assert.assertEquals(table.getValueFromCell(1, 2), "Иван Иванов");
+        Assert.assertEquals(table.getValueFromCell(5, 2), "28 October,1997");
+        Assert.assertEquals(table.getValueFromCell(1 ,"Label"), "Student Name"); // вместо номера столбца название заголовка
         return this;
     }
 
