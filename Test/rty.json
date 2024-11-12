@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "balanse": 1000,
+      "limit": 10
+    },
+    {
+      "balanse": 2000,
+      "limit": 15
+    },
+    {
+      "balanse": 3000,
+      "limit": 17
+    },
+    {
+      "balanse": 4000,
+      "limit": 22
+    }
+  ]
+}
